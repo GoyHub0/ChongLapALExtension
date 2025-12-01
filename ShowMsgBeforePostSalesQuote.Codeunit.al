@@ -19,7 +19,7 @@ codeunit 50105 ShowMsgBeforePostSalesQuote
         ConfirmManagement: Codeunit "Confirm Management";
     begin
         SalesHeader.CalcFields("Amount Including VAT");
-        if SalesHeader."Amount Including VAT" >= 5000 then
+        if SalesHeader."Amount Including VAT" >= 500 then
             exit;
 
         ConfirmText := StrSubstNo(
