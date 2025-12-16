@@ -1,0 +1,10 @@
+# AL Project specific
+.alpackages/
+.snapshots/
+
+# VS Code
+.vscode/*
+
+# Build output
+Default Publisher*
+
