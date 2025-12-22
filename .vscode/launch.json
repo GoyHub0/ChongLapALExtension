@@ -12,7 +12,8 @@
             "breakOnError": "All",
             "launchBrowser": true,
             "enableLongRunningSqlStatements": true,
-            "enableSqlInformationDebugger": true
+            "enableSqlInformationDebugger": true,
+            "tenant": "021f7583-ab6d-4cd6-81ff-7f422636b129"
         }
     ]
 }
