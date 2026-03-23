@@ -3,6 +3,7 @@ using Microsoft.Sales.Document;
 using Microsoft.Inventory.Tracking;
 using Microsoft.Inventory.Item;
 using Microsoft.Inventory.Ledger;
+using Microsoft.Foundation.Company;
 pageextension 50110 ButtonCreateReserveEntries extends "Sales Order Subform"
 {
     actions
@@ -83,6 +84,7 @@ pageextension 50110 ButtonCreateReserveEntries extends "Sales Order Subform"
         if SalesLine.FindSet() then begin
             repeat
                 CreateReservationEntriesForLine(SalesLine);
+                SetLocationCode(SalesLine);
             until SalesLine.Next() = 0;
         end;
     end;
@@ -113,10 +115,22 @@ pageextension 50110 ButtonCreateReserveEntries extends "Sales Order Subform"
 
         QtyLeftToReserve := SalesLine."Quantity (Base)";
 
-        ItemLedgerEntry.SetCurrentKey("Item No.", "Lot No.");
-        ItemLedgerEntry.SetRange("Item No.", SalesLine."No.");
-        ItemLedgerEntry.SetAscending("Lot No.", true);
+        ItemLedgerEntry.Reset();
 
+        // FEFO: earliest expiration first.
+        // Use boolean return so you don't crash if this key is unavailable in your environment.
+        if not ItemLedgerEntry.SetCurrentKey("Item No.", "Location Code", "Variant Code", "Expiration Date", "Lot No.") then
+            if not ItemLedgerEntry.SetCurrentKey("Item No.", "Expiration Date", "Lot No.") then
+                ItemLedgerEntry.SetCurrentKey("Item No.", "Lot No."); // fallback
+
+        ItemLedgerEntry.SetRange("Item No.", SalesLine."No.");
+        ItemLedgerEntry.SetRange("Location Code", SalesLine."Location Code");
+        ItemLedgerEntry.SetRange("Variant Code", SalesLine."Variant Code");
+        ItemLedgerEntry.SetFilter("Remaining Quantity", '>0');
+        ItemLedgerEntry.SetRange(Open, true);
+
+        ItemLedgerEntry.SetAscending("Expiration Date", true);
+        ItemLedgerEntry.SetAscending("Lot No.", true);
 
         if ReservationEntry.FindLast() then
             NextReservationEntryNo := ReservationEntry."Entry No."
@@ -185,4 +199,12 @@ pageextension 50110 ButtonCreateReserveEntries extends "Sales Order Subform"
         end;
     end;
 
+    local procedure SetLocationCode(var SalesLine: Record "Sales Line")
+    var
+        CompanyInfo: Record "Company Information";
+    begin
+        CompanyInfo.Get();
+        SalesLine."Location Code" := CompanyInfo."Location Code";
+        SalesLine.Modify();
+    end;
 }
