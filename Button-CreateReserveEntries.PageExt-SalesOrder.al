@@ -1,9 +1,6 @@
 namespace ALProject3;
 using Microsoft.Sales.Document;
-using Microsoft.Inventory.Tracking;
-using Microsoft.Inventory.Item;
-using Microsoft.Inventory.Ledger;
-using Microsoft.Foundation.Company;
+
 pageextension 50110 ButtonCreateReserveEntries extends "Sales Order Subform"
 {
     actions
