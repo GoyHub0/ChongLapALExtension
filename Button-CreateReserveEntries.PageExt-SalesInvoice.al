@@ -12,6 +12,7 @@ pageextension 50112 ButtonCreateReserveEntries_SI extends "Sales Invoice Subform
             {
                 ApplicationArea = All;
                 Caption = 'Delete Reserve Entries';
+                Image = DeleteRow;
                 trigger OnAction()
                 var
                     Helper: Codeunit ReserveEntriesHelper;
@@ -24,6 +25,7 @@ pageextension 50112 ButtonCreateReserveEntries_SI extends "Sales Invoice Subform
             {
                 ApplicationArea = All;
                 Caption = 'Assign Lot Nos.';
+                Image = LotInfo;
                 trigger OnAction()
                 var
                     Helper: Codeunit ReserveEntriesHelper;
